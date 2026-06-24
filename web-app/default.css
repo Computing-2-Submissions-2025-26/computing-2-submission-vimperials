@@ -1,0 +1,49 @@
+/* ---------------------------------------------------------------------
+     Page + start-screen styling. The in-game graphics are drawn on the
+     <canvas>; everything before the game starts is plain HTML/CSS.
+     --------------------------------------------------------------------- */
+     html, body {
+        margin: 0; padding: 0;
+        background: #0a0a1c;
+        color: #fff;
+        font-family: Arial, Helvetica, sans-serif;
+        min-height: 100vh;
+      }
+      body { display: flex; align-items: center; justify-content: center; }
+    
+      #startScreen {
+        width: 620px; max-width: 95vw;
+        padding: 26px 30px;
+        box-sizing: border-box;
+        text-align: center;
+      }
+      #startScreen h1 {
+        color: #ffdf00; font-size: 46px; margin: 0; letter-spacing: 2px;
+      }
+      #startScreen .subtitle { color: #9696b4; font-style: italic; font-size: 18px; margin-bottom: 18px; }
+      .section { color: #78aaff; font-weight: bold; font-size: 14px; margin: 18px 0 8px; }
+      .row { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    
+      button {
+        font-family: inherit; cursor: pointer; border: none; border-radius: 6px;
+        background: #28284a; color: #fff; padding: 10px 14px; font-size: 14px;
+      }
+      button.toggle.selected { background: #ffcd00; color: #000; font-weight: bold; }
+      button.count { width: 56px; height: 44px; font-size: 20px; font-weight: bold; }
+      button.count.selected { background: #ffcd00; color: #000; }
+    
+      .playerRow {
+        display: flex; align-items: center; gap: 6px;
+        background: #14142c; border-radius: 6px; padding: 6px 8px; margin: 6px 0;
+      }
+      .playerRow .name { width: 130px; text-align: left; font-weight: bold; font-size: 13px; }
+      .swatch { width: 30px; height: 30px; border-radius: 5px; border: 1px solid #3c3c5a; cursor: pointer; }
+      .swatch.selected { border: 3px solid #fff; }
+    
+      #startBtn {
+        margin-top: 22px; background: #ffcd00; color: #000;
+        font-size: 22px; font-weight: bold; padding: 14px 34px;
+      }
+      .hint { color: #8888aa; font-size: 11px; margin-top: 4px; }
+    
+      #game { display: none; background: #000; }

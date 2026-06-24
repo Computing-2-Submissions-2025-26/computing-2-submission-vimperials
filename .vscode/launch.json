@@ -10,7 +10,7 @@
             "request": "launch",
             "reAttach": true,
             "reloadOnAttach": true,
-            "file": "${workspaceFolder}/web-app/files/App.java",
+            "file": "${workspaceFolder}/web-app/index.html",
             "preferences": {
                 "security.fileuri.strict_origin_policy": false
             },
