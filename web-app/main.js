@@ -146,6 +146,61 @@ const WALL_IMAGES = ['wall1.png', 'wall2.png', 'wall3.png'];
 const BG_IMAGES   = ['', '', ''];
 
 
+const state = {
+    score: 0,
+    lives: 3,
+    powered: false,
+    player: {
+        position: { x: 9, y: 15 },
+        direction: "RIGHT"
+    },
+    ghosts: [
+        { position: { x: 9, y: 9 }, scared: false },
+        { position: { x: 8, y: 9 }, scared: false }
+    ],
+    pellets: [
+        { x: 1, y: 1 },
+        { x: 2, y: 1 }
+    ]
+};
+
+
+
+/**
+ * Get the player's current score.
+ * @param {GameState} state - the current game state
+ * @returns {number} the player's score in points
+ */
+function getScore(state) {
+    return state.score;
+}
+/**
+ * Get the number of pellets still on the board.
+ * @param {GameState} state - the current game state
+ * @returns {number} how many pellets remain to be eaten
+ */
+function getRemainingPelletCount(state) {
+    return 0; // placeholder — real logic comes in the implementation pass
+}
+/**
+ * Get the player's current amount of lives remaining.
+ * @param {GameState} state - the current game state
+ * @returns {number} the player's life count
+ */
+function getLives(state) {
+    return state.lives;
+}
+/**
+ * Get the player's current position
+ * @param {GameState} state - the current game state
+ * @returns {{x: number, y: number}} the player's position in grid coordinates
+ */
+function getPlayerPosition(state) {
+    return state.playerPosition;
+}
+
+
+
 /* =========================================================================
    2. HELPERS  —  geometry, asset loading, vector drawing
    ========================================================================= */
