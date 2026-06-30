@@ -8,7 +8,7 @@
 //   Run from the repository root:  npm test
 // =========================================================================
 
-/*global describe, it*/
+/* global describe, it */
 
 import assert from "node:assert/strict";
 import {

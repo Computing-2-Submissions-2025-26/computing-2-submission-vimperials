@@ -161,6 +161,12 @@ function drawPellets(ctx, board) {
     });
 }
 
+function drawDotPixels(ctx, cx, cy, radius) {
+    ctx.beginPath();
+    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+    ctx.fill();
+}
+
 function drawGhost(ctx, px, py, scared, index) {
     const r = TILE / 2;
     ctx.fillStyle = (
@@ -177,12 +183,6 @@ function drawGhost(ctx, px, py, scared, index) {
     ctx.fillStyle = "#ffffff";
     drawDotPixels(ctx, px + TILE * 0.34, py + TILE * 0.44, 2.4);
     drawDotPixels(ctx, px + TILE * 0.66, py + TILE * 0.44, 2.4);
-}
-
-function drawDotPixels(ctx, cx, cy, radius) {
-    ctx.beginPath();
-    ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-    ctx.fill();
 }
 
 function drawPlayer(ctx, px, py, direction, colour, powered, out) {
@@ -215,6 +215,33 @@ function drawPlayer(ctx, px, py, direction, colour, powered, out) {
 
 function colourForGlobalPlayer(p) {
     return PALETTE[ui.colours[p]];
+}
+
+function drawBoardBanner(ctx, board, dims) {
+    if (!boardFinished(board) && !boardGameOver(board)) {
+        return;
+    }
+    const won = boardFinished(board);
+    const mx = dims.cols * TILE / 2;
+    const my = dims.rows * TILE / 2;
+    ctx.fillStyle = "rgba(7,7,13,0.85)";
+    ctx.fillRect(mx - 110, my - 26, 220, 52);
+    ctx.strokeStyle = (
+        won
+        ? "#38d36b"
+        : "#ff5a5a"
+    );
+    ctx.lineWidth = 2;
+    ctx.strokeRect(mx - 110, my - 26, 220, 52);
+    ctx.fillStyle = "#ffffff";
+    ctx.font = "bold 22px Arial";
+    ctx.textAlign = "center";
+    ctx.fillText((
+        won
+        ? "FINISHED!"
+        : "GAME OVER"
+    ), mx, my + 8);
+    ctx.textAlign = "left";
 }
 
 // Draw one board (and its players/ghosts) at a pixel offset. `globals` maps
@@ -260,76 +287,6 @@ function drawBoard(ctx, prevBoard, curBoard, globals, offsetX, offsetY, alpha) {
 
     drawBoardBanner(ctx, curBoard, dims);
     ctx.restore();
-}
-
-function drawBoardBanner(ctx, board, dims) {
-    if (!boardFinished(board) && !boardGameOver(board)) {
-        return;
-    }
-    const won = boardFinished(board);
-    const mx = dims.cols * TILE / 2;
-    const my = dims.rows * TILE / 2;
-    ctx.fillStyle = "rgba(7,7,13,0.85)";
-    ctx.fillRect(mx - 110, my - 26, 220, 52);
-    ctx.strokeStyle = (
-        won
-        ? "#38d36b"
-        : "#ff5a5a"
-    );
-    ctx.lineWidth = 2;
-    ctx.strokeRect(mx - 110, my - 26, 220, 52);
-    ctx.fillStyle = "#ffffff";
-    ctx.font = "bold 22px Arial";
-    ctx.textAlign = "center";
-    ctx.fillText((
-        won
-        ? "FINISHED!"
-        : "GAME OVER"
-    ), mx, my + 8);
-    ctx.textAlign = "left";
-}
-
-// Per-player cards in the header (score, lives, level, leader highlight).
-function drawHeader(ctx, game) {
-    const width = app.canvas.width;
-    const count = getPlayerCount(game);
-    const winner = getWinner(game);
-    ctx.fillStyle = "#0c0c1e";
-    ctx.fillRect(0, 0, width, HEADER);
-
-    ctx.fillStyle = "#ffd23f";
-    ctx.font = "bold 12px Arial";
-    ctx.textAlign = "left";
-    ctx.fillText((
-        getMode(game) === "RACE"
-        ? "PAC-MAN RACE"
-        : "PAC-MAN BATTLE"
-    ), 10, 14);
-    ctx.fillStyle = "#9696b4";
-    ctx.font = "10px Arial";
-    ctx.textAlign = "right";
-    ctx.fillText("ESC: menu", width - 10, 14);
-    ctx.textAlign = "left";
-
-    const margin = 6;
-    const gap = 6;
-    const top = 20;
-    const cardH = HEADER - 24;
-    const cardW = (width - margin * 2 - gap * (count - 1)) / count;
-    let p = 0;
-    while (p < count) {
-        drawPlayerCard(
-            ctx,
-            game,
-            p,
-            margin + p * (cardW + gap),
-            top,
-            cardW,
-            cardH,
-            winner
-        );
-        p += 1;
-    }
 }
 
 function drawPlayerCard(ctx, game, p, x, top, cardW, cardH, winner) {
@@ -381,6 +338,49 @@ function drawPlayerCard(ctx, game, p, x, top, cardW, cardH, winner) {
             x + 6,
             top + 55
         );
+    }
+}
+
+// Per-player cards in the header (score, lives, level, leader highlight).
+function drawHeader(ctx, game) {
+    const width = app.canvas.width;
+    const count = getPlayerCount(game);
+    const winner = getWinner(game);
+    ctx.fillStyle = "#0c0c1e";
+    ctx.fillRect(0, 0, width, HEADER);
+
+    ctx.fillStyle = "#ffd23f";
+    ctx.font = "bold 12px Arial";
+    ctx.textAlign = "left";
+    ctx.fillText((
+        getMode(game) === "RACE"
+        ? "PAC-MAN RACE"
+        : "PAC-MAN BATTLE"
+    ), 10, 14);
+    ctx.fillStyle = "#9696b4";
+    ctx.font = "10px Arial";
+    ctx.textAlign = "right";
+    ctx.fillText("ESC: menu", width - 10, 14);
+    ctx.textAlign = "left";
+
+    const margin = 6;
+    const gap = 6;
+    const top = 20;
+    const cardH = HEADER - 24;
+    const cardW = (width - margin * 2 - gap * (count - 1)) / count;
+    let p = 0;
+    while (p < count) {
+        drawPlayerCard(
+            ctx,
+            game,
+            p,
+            margin + p * (cardW + gap),
+            top,
+            cardW,
+            cardH,
+            winner
+        );
+        p += 1;
     }
 }
 
@@ -549,6 +549,38 @@ function buildModeButtons() {
     });
 }
 
+function buildPlayerRows() {
+    clearChildren(dom.playersPanel);
+    const range = Array.from({length: ui.count}, function (ignore, i) {
+        return i;
+    });
+    range.forEach(function (i) {
+        const row = document.createElement("div");
+        row.className = "playerRow";
+        const name = document.createElement("div");
+        name.className = "name";
+        name.textContent = "P" + (i + 1) + " (" + CONTROL_HINTS[i] + ")";
+        row.appendChild(name);
+        PALETTE.forEach(function (ignore, c) {
+            const sw = document.createElement("button");
+            sw.type = "button";
+            sw.className = "swatch" + (
+                ui.colours[i] === c
+                ? " selected"
+                : ""
+            );
+            sw.style.background = PALETTE[c];
+            sw.setAttribute("aria-label", "Colour " + (c + 1));
+            sw.addEventListener("click", function () {
+                ui.colours[i] = c;
+                buildPlayerRows();
+            });
+            row.appendChild(sw);
+        });
+        dom.playersPanel.appendChild(row);
+    });
+}
+
 function buildCountButtons() {
     clearChildren(dom.countRow);
     [2, 3, 4].forEach(function (n) {
@@ -566,42 +598,6 @@ function buildCountButtons() {
                 buildPlayerRows();
             }
         ));
-    });
-}
-
-function buildSwatch(playerIdx, colorIdx) {
-    const sw = document.createElement("button");
-    sw.type = "button";
-    sw.className = "swatch" + (
-        ui.colours[playerIdx] === colorIdx
-        ? " selected"
-        : ""
-    );
-    sw.style.background = PALETTE[colorIdx];
-    sw.setAttribute("aria-label", "Colour " + (colorIdx + 1));
-    sw.addEventListener("click", function () {
-        ui.colours[playerIdx] = colorIdx;
-        buildPlayerRows();
-    });
-    return sw;
-}
-
-function buildPlayerRows() {
-    clearChildren(dom.playersPanel);
-    const range = Array.from({length: ui.count}, function (ignore, i) {
-        return i;
-    });
-    range.forEach(function (i) {
-        const row = document.createElement("div");
-        row.className = "playerRow";
-        const name = document.createElement("div");
-        name.className = "name";
-        name.textContent = "P" + (i + 1) + " (" + CONTROL_HINTS[i] + ")";
-        row.appendChild(name);
-        PALETTE.forEach(function (ignore, c) {
-            row.appendChild(buildSwatch(i, c));
-        });
-        dom.playersPanel.appendChild(row);
     });
 }
 
