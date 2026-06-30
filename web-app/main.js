@@ -1,12 +1,5 @@
 /*jslint browser */
 
-// =========================================================================
-// PAC-MAN RACE & BATTLE — WEB APP (UI)
-// -------------------------------------------------------------------------
-// This file is the interface only: it draws the game and forwards input.
-// Every rule lives in Module.js; the UI reaches it through its exported
-// functions and never decides any game logic itself.
-// =========================================================================
 
 import {
     boardDimensions,
@@ -37,45 +30,39 @@ import {
     step
 } from "./Module.js";
 
-// ---- presentation constants (UI only) -----------------------------------
+// UI constants
 
 const TILE = 22;             // pixel size of one tile on screen
 const HEADER = 80;           // header bar height
-const BORDER = 4;            // gap between RACE boards
-const STEP_MS = 130;         // real time between game steps
+const BORDER = 4;            // gap between the multiplayer boards
+const STEP_MS = 130;         // time between each game step
 
 const PALETTE = [
     "#ffd23f", "#3cdc5a", "#56b4e9", "#ff7ad5",
     "#ff8c00", "#78a0ff", "#e69f00", "#ffffff"
 ];
 const GHOST_COLOURS = ["#e69f00", "#56b4e9", "#009e73", "#d55e00"];
-const CONTROL_HINTS = ["Arrows", "WASD", "IJKL", "Numpad"];
+const CONTROL_HINTS = ["Arrows", "WASD", "IJKL", "TFGH"];
 
 // Which global player + direction a key controls.
 const KEY_MAP = {
-    ArrowDown: {dir: "DOWN", player: 0},
-    ArrowLeft: {dir: "LEFT", player: 0},
-    ArrowRight: {dir: "RIGHT", player: 0},
-    ArrowUp: {dir: "UP", player: 0},
-    a: {dir: "LEFT", player: 1},
-    d: {dir: "RIGHT", player: 1},
+    ArrowDown: {dir: "DOWN", player: 1},
+    ArrowLeft: {dir: "LEFT", player: 1},
+    ArrowRight: {dir: "RIGHT", player: 1},
+    ArrowUp: {dir: "UP", player: 1},
+    a: {dir: "LEFT", player: 0},
+    d: {dir: "RIGHT", player: 0},
+    s: {dir: "DOWN", player: 0},
+    w: {dir: "UP", player: 0},
     i: {dir: "UP", player: 2},
     j: {dir: "LEFT", player: 2},
     k: {dir: "DOWN", player: 2},
     l: {dir: "RIGHT", player: 2},
-    s: {dir: "DOWN", player: 1},
-    w: {dir: "UP", player: 1}
+    f: {dir: "LEFT", player: 3},
+    g: {dir: "DOWN", player: 3},
+    h: {dir: "RIGHT", player: 3},
+    t: {dir: "UP", player: 3}
 };
-
-// Numpad keys (read from event.code so NumLock does not matter).
-const CODE_MAP = {
-    Numpad4: {dir: "LEFT", player: 3},
-    Numpad5: {dir: "DOWN", player: 3},
-    Numpad6: {dir: "RIGHT", player: 3},
-    Numpad8: {dir: "UP", player: 3}
-};
-
-// ---- mutable UI shell state (not game logic) ----------------------------
 
 const ui = {
     colours: [0, 1, 2, 3],
@@ -95,7 +82,6 @@ const app = {
 
 const dom = {};
 
-// ---- small helpers ------------------------------------------------------
 
 function clamp01(value) {
     return Math.max(0, Math.min(1, value));
@@ -128,7 +114,7 @@ function facingAngle(direction) {
     return 0;
 }
 
-// ---- drawing primitives -------------------------------------------------
+
 
 function drawWalls(ctx, board) {
     boardWalls(board).forEach(function (wall) {
@@ -211,7 +197,7 @@ function drawPlayer(ctx, px, py, direction, colour, powered, out) {
     }
 }
 
-// ---- board & header drawing ---------------------------------------------
+// board and header
 
 function colourForGlobalPlayer(p) {
     return PALETTE[ui.colours[p]];
@@ -426,7 +412,7 @@ function render(alpha) {
     drawHeader(ctx, app.cur);
 }
 
-// ---- canvas sizing ------------------------------------------------------
+// canvas sizing
 
 function sizeCanvas(game) {
     const dims = boardDimensions(getBoards(game)[0]);
@@ -452,7 +438,7 @@ function sizeCanvas(game) {
     app.canvas.height = bh * 2 + BORDER + HEADER;
 }
 
-// ---- the loop -----------------------------------------------------------
+// game loop
 
 function loop(now) {
     if (!app.running) {
@@ -470,7 +456,7 @@ function loop(now) {
     app.rafId = window.requestAnimationFrame(loop);
 }
 
-// ---- start / stop -------------------------------------------------------
+// start and stop
 
 function startGame() {
     app.cur = createGame(ui.mode, ui.count, Date.now() % 100000 + 1);
@@ -490,7 +476,7 @@ function returnToMenu() {
     dom.startScreen.style.display = "block";
 }
 
-// ---- input --------------------------------------------------------------
+// input
 
 function onKeyDown(event) {
     if (!app.running) {
@@ -502,14 +488,14 @@ function onKeyDown(event) {
         return;
     }
     const byKey = KEY_MAP[event.key] || KEY_MAP[event.key.toLowerCase()];
-    const action = byKey || CODE_MAP[event.code];
+    const action = byKey;
     if (action !== undefined && action.player < ui.count) {
         app.cur = setDirection(app.cur, action.player, action.dir);
         event.preventDefault();
     }
 }
 
-// ---- start screen (built with the template's class names) ---------------
+// start screen
 
 function clearChildren(element) {
     while (element.firstChild) {

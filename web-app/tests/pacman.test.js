@@ -1,12 +1,3 @@
-// =========================================================================
-// PAC-MAN RACE & BATTLE — UNIT TESTS  (Mocha)
-// -------------------------------------------------------------------------
-// Black-box behaviour tests. They use only the public API and tiny hand-built
-// maps, so every expected score / position is a literal worked out by hand
-// rather than recomputed from the module under test.
-//
-//   Run from the repository root:  npm test
-// =========================================================================
 
 /* global describe, it */
 
@@ -43,7 +34,7 @@ import {
     step
 } from "../Module.js";
 
-// Convenience: the sole board, and one player on it, of a small game.
+// Convenience: the sole board, and one player on it on a game
 function board(g) {
     return getBoards(g)[0];
 }
@@ -72,26 +63,26 @@ describe("Setting up a game", function () {
 });
 
 describe("Making a move", function () {
-    it("advances a player one tile into open space", function () {
+    it("advances a player one tile", function () {
         const start = createGameFromMap(CORRIDOR, 1, 1);
         const next = step(setDirection(start, 0, "RIGHT"));
         assert.deepEqual(playerPosition(player(next, 0)), {x: 2, y: 1});
     });
 
-    it("leaves a player still when it moves into a wall", function () {
+    it("doesnt move the player when it hits a wall", function () {
         const start = createGameFromMap(CORRIDOR, 1, 1);
         const next = step(setDirection(start, 0, "LEFT"));
         assert.deepEqual(playerPosition(player(next, 0)), {x: 1, y: 1});
     });
 
-    it("does not mutate the game it was given", function () {
+    it("does not change the game it was given", function () {
         const start = createGame("BATTLE", 2, 1);
         const frozen = JSON.stringify(start);
         step(setDirection(start, 0, "LEFT"));
         assert.equal(JSON.stringify(start), frozen);
     });
 
-    it("plays out identically for the same setup and seed", function () {
+    it("plays out identically for the same setup and map", function () {
         const run = function () {
             let g = createGame("RACE", 2, 7);
             let i = 0;
@@ -137,8 +128,6 @@ describe("Eating pellets", function () {
 });
 
 describe("Ghost encounters", function () {
-    // Player eats the power pellet at (2,1); the lone ghost's only move is
-    // left onto the player's tile, so the powered collision is guaranteed.
     it("eats a ghost while powered for 200 and keeps every life", function () {
         const start = createGameFromMap(["XXXXX", "XPErX", "XXXXX"], 1, 1);
         const next = step(setDirection(start, 0, "RIGHT"));
@@ -146,7 +135,6 @@ describe("Ghost encounters", function () {
         assert.equal(playerLives(player(next, 0)), 3);
     });
 
-    // Same geometry without the power pellet: a certain unpowered collision.
     it("costs one life and respawns the player when unpowered", function () {
         const start = createGameFromMap(["XXXXX", "XP rX", "XXXXX"], 1, 1);
         const next = step(setDirection(start, 0, "RIGHT"));
@@ -179,9 +167,7 @@ describe("Ending the game", function () {
         assert.equal(getWinner(next), 0);
     });
 
-    // Three ghosts each have one forced move onto the still player, stripping
-    // all three lives in a single step. The walled-off pellet at (5,1) keeps
-    // the empty board from also counting as finished.
+
     it("eliminates a player and ends when the last life is gone", function () {
         const map = ["XXXXXXX", "XrPrX X", "XXrXXXX", "XXXXXXX"];
         const start = createGameFromMap(map, 1, 1);

@@ -4,6 +4,16 @@
 
 This is the submission template for your Computing 2 Applications coursework submission.
 
+# Multiplayer Pacman
+This game is a multiplayer version of PacMan, where each player has to either: Race each other to consume all the pellets first, or in Battle, consume the most amount of pellets first on the same map.
+
+# AI Declaration
+For this project, AI (Claude) was used as a guide and help throughout: aiding me with any code or unit test problems.
+
+# Game/Code inspiration
+I used this guide initially as a framework and foundation for the project.
+https://www.youtube.com/watch?v=lB_J-VNMVpE
+
 ## Checklist
 ### Install dependencies locally
 This template relies on a a few packages from the Node Package Manager, npm.

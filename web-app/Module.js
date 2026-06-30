@@ -1,10 +1,3 @@
-// =========================================================================
-// PAC-MAN RACE & BATTLE — GAME MODULE
-// -------------------------------------------------------------------------
-// Pure, functional game logic for the multiplayer game. No DOM, no canvas,
-// no clock and no Math.random: every function returns a new value from its
-// arguments alone.
-//
 //   * Timing (power pellets) is counted in STEPS, not milliseconds.
 //   * Randomness (ghost movement) is a deterministic seed threaded through
 //     the state, so `step` is a pure function of its input.
@@ -12,7 +5,6 @@
 //     for smooth drawing; the rules live here.
 //
 // Coordinates are grid tiles: x = column (0 = left), y = row (0 = top).
-//
 // SHAPE OF THE STATE
 //   A Game holds one or more Boards. RACE gives each player their own board
 //   (and three levels); BATTLE puts every player on one shared board.
