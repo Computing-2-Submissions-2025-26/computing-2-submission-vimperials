@@ -714,49 +714,47 @@ function collides(player, ghost) {
 }
 
 /**
- * Resolve one ghost against the players sharing its tile.
- * @param {object} acc - the running {ghosts, players}
- * @param {GhostState} ghost - the ghost to resolve
- * @returns {object} the updated accumulator
- */
-function resolveGhost(acc, ghost) {
-    const hits = R.filter(function (i) {
-        const player = acc.players[i];
-        return !player.eliminated && collides(player, ghost);
-    }, R.range(0, acc.players.length));
-    const powered = R.find(function (i) {
-        return acc.players[i].powered;
-    }, hits);
-    if (powered !== undefined) {
-        return {
-            ghosts: R.append(
-                R.mergeRight(ghost, {position: ghost.spawn, scared: false}),
-                acc.ghosts
-            ),
-            players: award(acc.players, powered, POINTS.ghost)
-        };
-    }
-    const players = R.reduce(function (ps, i) {
-        return R.adjust(i, hitPlayer, ps);
-    }, acc.players, hits);
-    return {ghosts: R.append(ghost, acc.ghosts), players};
-}
-
-/**
  * Stage: resolve every ghost/player contact.
  * @param {BoardState} board - the board
  * @returns {BoardState} the board after collisions
  */
 function resolveCollisions(board) {
-    const result = R.reduce(
-        resolveGhost,
-        {ghosts: [], players: board.players},
-        board.ghosts
-    );
-    return R.mergeRight(board, {
-        ghosts: result.ghosts,
-        players: result.players
-    });
+    const players = board.players;
+    const ghosts = board.ghosts;
+
+    // A ghost is eaten if any powered, active player meets it; it goes home.
+    const newGhosts = R.map(function (ghost) {
+        const eaten = R.any(function (p) {
+            return !p.eliminated && p.powered && collides(p, ghost);
+        }, players);
+        return (
+            eaten
+            ? R.mergeRight(ghost, {position: ghost.spawn, scared: false})
+            : ghost
+        );
+    }, ghosts);
+
+    // Each player resolves once per step: a powered player eats every ghost it
+    // meets (200 each); an unpowered player that meets any ghost loses exactly
+    // one life, no matter how many ghosts are on it.
+    const newPlayers = R.map(function (player) {
+        if (player.eliminated) {
+            return player;
+        }
+        const met = R.filter(function (ghost) {
+            return collides(player, ghost);
+        }, ghosts);
+        if (met.length === 0) {
+            return player;
+        }
+        if (player.powered) {
+            const gained = met.length * POINTS.ghost;
+            return R.assoc("score", player.score + gained, player);
+        }
+        return hitPlayer(player);
+    }, players);
+
+    return R.mergeRight(board, {ghosts: newGhosts, players: newPlayers});
 }
 
 /**

@@ -46,22 +46,22 @@ const CONTROL_HINTS = ["Arrows", "WASD", "IJKL", "TFGH"];
 
 // Which global player + direction a key controls.
 const KEY_MAP = {
-    ArrowDown: {dir: "DOWN", player: 1},
-    ArrowLeft: {dir: "LEFT", player: 1},
-    ArrowRight: {dir: "RIGHT", player: 1},
-    ArrowUp: {dir: "UP", player: 1},
-    a: {dir: "LEFT", player: 0},
-    d: {dir: "RIGHT", player: 0},
-    s: {dir: "DOWN", player: 0},
-    w: {dir: "UP", player: 0},
+    ArrowDown: {dir: "DOWN", player: 0},
+    ArrowLeft: {dir: "LEFT", player: 0},
+    ArrowRight: {dir: "RIGHT", player: 0},
+    ArrowUp: {dir: "UP", player: 0},
+    a: {dir: "LEFT", player: 1},
+    d: {dir: "RIGHT", player: 1},
+    f: {dir: "LEFT", player: 3},
+    g: {dir: "DOWN", player: 3},
+    h: {dir: "RIGHT", player: 3},
     i: {dir: "UP", player: 2},
     j: {dir: "LEFT", player: 2},
     k: {dir: "DOWN", player: 2},
     l: {dir: "RIGHT", player: 2},
-    f: {dir: "LEFT", player: 3},
-    g: {dir: "DOWN", player: 3},
-    h: {dir: "RIGHT", player: 3},
-    t: {dir: "UP", player: 3}
+    s: {dir: "DOWN", player: 1},
+    t: {dir: "UP", player: 3},
+    w: {dir: "UP", player: 1}
 };
 
 const ui = {
